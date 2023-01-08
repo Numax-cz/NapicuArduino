@@ -3,9 +3,16 @@
 #include <Keypad.h>
 
 void beep();
-void beepError();
-void writeText(char key);
+void doubleBeep();
 void writeSetPasswordText();
+void writeEnterPasswordText();
+void lock();
+void unlock();
+void unlockOption();
+void clearPassowordLine();
+void writeBadPassowrdText();
+void writeLockedText();
+bool compare(char a[], char b[]);
 
 const int PAD_ROWNS = 4;
 const int PAD_COLS = 4;
@@ -32,7 +39,10 @@ LiquidCrystal_I2C lcd(0x27, LCD_COLS, LCD_ROWNS);
 const int MAX_PASSWORD_LENGTH = 3;
 
 int cursorPositionX = 0;
+char inputKeys[MAX_PASSWORD_LENGTH] = {};
 char passwordKeys[MAX_PASSWORD_LENGTH] = {};
+boolean locked = false;
+boolean displayOff = false;
 
 void setup(){
     pinMode(BUZZER_PIN, OUTPUT);
@@ -47,24 +57,76 @@ void loop(){
 
     if(key){
         
-        if(passwordKeys)
 
-        
-        
-        if(key == '*'){
+      
 
-        }else if (key == '#'){
+        if (key == '#'){
+            unlock();
+        }else {
+            if(!displayOff){
 
+                if(key == '*'){
+                    if((cursorPositionX + 1 > MAX_PASSWORD_LENGTH) && !locked){
+                        lock();
+                    }else {
+                        clearPassowordLine();
+                    }
+
+                }else {
+                    if(cursorPositionX + 1 > MAX_PASSWORD_LENGTH){
+
+                        clearPassowordLine();
+
+                
+                    }else {
+                        lcd.setCursor(cursorPositionX, 1);
+                        lcd.print("*");
+
+                        beep();
+
+                        inputKeys[cursorPositionX] = key;
+                        cursorPositionX++;
+                    }
+                } 
+
+            }
         }
 
-        writeText(key);
+
+
+        
+        
+
+
+
+
     }
+
 
 }
 
 void writeSetPasswordText(){
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Zvolte heslo:");
+}
+
+void writeEnterPasswordText(){
+    lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Zadejte heslo:");
+}
+
+void writeBadPassowrdText(){
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Spatne heslo");
+}
+
+void writeLockedText(){
+    lcd.clear();
+    lcd.setCursor(4, 0);
+    lcd.print("Uzamknuto");
 }
 
 void beep(){
@@ -73,36 +135,79 @@ void beep(){
   digitalWrite(BUZZER_PIN, LOW);
 }
 
-void beepError(){
+void doubleBeep(){
   beep();
   delay(100);
   beep();
 }
 
-void writeText(char key){
+void clearPassowordLine(){
+    doubleBeep(); 
+    memset(inputKeys, 0, MAX_PASSWORD_LENGTH);
+    cursorPositionX = 0;
+    lcd.clear();
+    
+    if(!locked) writeSetPasswordText();
+    else writeEnterPasswordText();
+    
+}
+
+void unlockOption(){
+    doubleBeep();
+    lcd.backlight();
+    writeEnterPasswordText();
+    displayOff = false;
+}
 
 
-    if(cursorPositionX + 1 > MAX_PASSWORD_LENGTH){
-        beepError(); 
+void lock(){
+    doubleBeep();
+    memcpy(passwordKeys, inputKeys, MAX_PASSWORD_LENGTH);
+    memset(inputKeys, 0, MAX_PASSWORD_LENGTH);
+    cursorPositionX = 0;
 
-        memset(passwordKeys, 0, MAX_PASSWORD_LENGTH);
-        lcd.clear();
-        writeSetPasswordText();
+    locked = true;
 
-        cursorPositionX = 0;
-    }else {
-        lcd.setCursor(cursorPositionX, 1);
-        lcd.print("*");
+    writeLockedText();
 
-        beep();
-
-        passwordKeys[cursorPositionX] = key;
-        cursorPositionX++;
-    }
-
-
-
-
-
+    lcd.noBacklight();
+    displayOff = true;
 
 }
+
+void unlock(){
+    if(displayOff){
+        unlockOption();
+        return;
+    }
+
+    if((cursorPositionX + 1 > MAX_PASSWORD_LENGTH) && compare(passwordKeys, inputKeys)){
+        doubleBeep();
+
+        lcd.clear();
+        lcd.print("Odemknuto");
+         // TODO UNLOCK FUNCTION
+
+        locked = false;
+    } else {
+
+        doubleBeep();
+        writeBadPassowrdText();
+        delay(1500);
+
+        clearPassowordLine();
+    }
+
+}
+
+bool compare(char a[],char b[]){
+    for(int i=0;a[i]!='\0';i++){
+        if(a[i]!=b[i])
+            return false;
+    }
+    return true;
+}
+
+
+
+
