@@ -1,5 +1,4 @@
 #include <LiquidCrystal_I2C.h>
-
 #include <Keypad.h>
 
 void beep();
@@ -56,53 +55,34 @@ void loop(){
     const char key = keypad.getKey();
 
     if(key){
-        
-
-      
-
         if (key == '#'){
             unlock();
-        }else {
-            if(!displayOff){
-
-                if(key == '*'){
-                    if((cursorPositionX + 1 > MAX_PASSWORD_LENGTH) && !locked){
-                        lock();
-                    }else {
-                        clearPassowordLine();
-                    }
-
-                }else {
-                    if(cursorPositionX + 1 > MAX_PASSWORD_LENGTH){
-
-                        clearPassowordLine();
-
-                
-                    }else {
-                        lcd.setCursor(cursorPositionX, 1);
-                        lcd.print("*");
-
-                        beep();
-
-                        inputKeys[cursorPositionX] = key;
-                        cursorPositionX++;
-                    }
-                } 
-
-            }
+            return;
         }
 
+        if(!displayOff){
+            if(key == '*'){
+                if((cursorPositionX + 1 > MAX_PASSWORD_LENGTH) && !locked){
+                    lock();
+                }else {
+                    clearPassowordLine();
+                }
 
+            }else {
+                if(cursorPositionX + 1 > MAX_PASSWORD_LENGTH){
+                    clearPassowordLine();
+                }else {
+                    lcd.setCursor(cursorPositionX, 1);
+                    lcd.print("*");
 
-        
-        
+                    beep();
 
-
-
-
+                    inputKeys[cursorPositionX] = key;
+                    cursorPositionX++;
+                }
+            } 
+        }
     }
-
-
 }
 
 void writeSetPasswordText(){
@@ -149,7 +129,6 @@ void clearPassowordLine(){
     
     if(!locked) writeSetPasswordText();
     else writeEnterPasswordText();
-    
 }
 
 void unlockOption(){
@@ -158,7 +137,6 @@ void unlockOption(){
     writeEnterPasswordText();
     displayOff = false;
 }
-
 
 void lock(){
     doubleBeep();
@@ -172,7 +150,6 @@ void lock(){
 
     lcd.noBacklight();
     displayOff = true;
-
 }
 
 void unlock(){
@@ -181,7 +158,7 @@ void unlock(){
         return;
     }
 
-    if((cursorPositionX + 1 > MAX_PASSWORD_LENGTH) && compare(passwordKeys, inputKeys)){
+    if(compare(passwordKeys, inputKeys)){
         doubleBeep();
 
         lcd.clear();
@@ -190,20 +167,19 @@ void unlock(){
 
         locked = false;
     } else {
-
         doubleBeep();
         writeBadPasswordText();
         delay(1500);
 
         clearPassowordLine();
     }
-
 }
 
 bool compare(char a[],char b[]){
-    for(int i=0;a[i]!='\0';i++){
-        if(a[i]!=b[i])
+    for(int i=0; i < MAX_PASSWORD_LENGTH; i++){
+        if(a[i]!=b[i]){
             return false;
+        }
     }
     return true;
 }
