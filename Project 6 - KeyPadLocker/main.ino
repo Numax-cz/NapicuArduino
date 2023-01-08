@@ -10,7 +10,7 @@ void lock();
 void unlock();
 void unlockOption();
 void clearPassowordLine();
-void writeBadPassowrdText();
+void writeBadPasswordText();
 void writeLockedText();
 bool compare(char a[], char b[]);
 
@@ -117,7 +117,7 @@ void writeEnterPasswordText(){
     lcd.print("Zadejte heslo:");
 }
 
-void writeBadPassowrdText(){
+void writeBadPasswordText(){
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Spatne heslo");
@@ -192,7 +192,7 @@ void unlock(){
     } else {
 
         doubleBeep();
-        writeBadPassowrdText();
+        writeBadPasswordText();
         delay(1500);
 
         clearPassowordLine();
