@@ -23,6 +23,7 @@ byte PAD_ROWN_PINS[PAD_ROWNS] = {9, 8, 7, 6};
 byte PAD_COL_PINS[PAD_COLS] = {5, 4, 3, 2};
 
 const int BUZZER_PIN = 12;
+const int REPLAY_PIN = 13;
 
 char padKeys[PAD_ROWNS][PAD_COLS] = {
     {'1', '2', '3', 'A'},
@@ -164,6 +165,10 @@ void unlock(){
         lcd.clear();
         lcd.print("Odemknuto");
          // TODO UNLOCK FUNCTION
+
+        digitalWrite(REPLAY_PIN, HIGH);
+        delay(5000);
+        digitalWrite(REPLAY_PIN, LOW);
 
         locked = false;
     } else {
