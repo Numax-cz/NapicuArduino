@@ -158,17 +158,18 @@ void unlock(){
         unlockOption();
         return;
     }
-
+    
     if(compare(passwordKeys, inputKeys)){
         doubleBeep();
 
         lcd.clear();
         lcd.print("Odemknuto");
-         // TODO UNLOCK FUNCTION
 
         digitalWrite(REPLAY_PIN, HIGH);
         delay(5000);
         digitalWrite(REPLAY_PIN, LOW);
+
+        //TODO RESET 
 
         locked = false;
     } else {
