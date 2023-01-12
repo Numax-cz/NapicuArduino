@@ -17,6 +17,6 @@
 </tr>
 <tr>
     <td>1</td>
-    <td>MCP23008, 32 LCD 16 x 2 (I2C)</td>
+    <td>PCF8574, 39 LCD 16 x 2 (I2C)</td>
 </tr>
 </table>
