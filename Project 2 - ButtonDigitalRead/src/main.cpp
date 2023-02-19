@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 const int LED_PIN = 13;
 const int BUTTON_PIN = 2;
 

@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 const int ANALOG_PIN = A1;
 
 void setup(){

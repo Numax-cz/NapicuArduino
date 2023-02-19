@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 const int STEPPER_PIN_1 = 9;
 const int STEPPER_PIN_2 = 10;
 const int STEPPER_PIN_3 = 11;
